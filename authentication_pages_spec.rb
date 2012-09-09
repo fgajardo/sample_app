@@ -93,12 +93,47 @@ describe "Authentication" do
 
         describe "submitting to the update action" do
           before { put user_path(user) }
-          specify { response.should redirect_to(signin_path) }
+          specify { response.should redirect_to(signin_url) }
         end
 
         describe "visiting user index" do
           before { visit users_path }
           it { should have_selector('title', text: 'Sign in') }
+        end
+
+        describe "visiting the following page" do
+          before { visit following_user_path(user) }
+          it { should have_selector('title', text: 'Sign in') }
+        end
+
+        describe "visiting the followers page" do
+          before { visit followers_user_path(user) }
+          it { should have_selector('title', text: 'Sign in') }
+        end
+      end
+
+      describe "in the Microposts controller" do
+
+        describe "submitting to the create action" do
+          before { post microposts_path }
+          specify { response.should redirect_to(signin_url) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { response.should redirect_to(signin_url) }
+        end
+      end
+
+      describe "in the Relationships controller" do
+        describe "submitting to the create action" do
+          before { post relationships_path }
+          specify { response.should redirect_to(signin_url) }
+        end
+
+        describe "submitting to the destroy action" do
+          before { delete relationship_path(1) }
+          specify { response.should redirect_to(signin_url) }          
         end
       end
     end
@@ -115,7 +150,7 @@ describe "Authentication" do
 
       describe "submitting a PUT request to the Users#update action" do
         before { put user_path(wrong_user) }
-        specify { response.should redirect_to(root_path) }
+        specify { response.should redirect_to(root_url) }
       end
     end
 
@@ -127,7 +162,7 @@ describe "Authentication" do
 
       describe "submitting a DELETE request to the Users#destroy action" do
         before { delete user_path(user) }
-        specify { response.should redirect_to(root_path) }        
+        specify { response.should redirect_to(root_url) }        
       end
     end
   end
